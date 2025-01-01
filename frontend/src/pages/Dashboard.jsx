@@ -49,7 +49,7 @@ const Dashboard = () => {
   async function logOut() {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/users/logout",
+        "https://todoappfullstack-kxv2.onrender.com/api/users/logout",
         { withCredentials: "include" }
       );
       navigate("/login");
