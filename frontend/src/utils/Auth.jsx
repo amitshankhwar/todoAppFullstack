@@ -3,7 +3,7 @@ import axios from "axios";
 export const verifyToken = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:5000/api/users/verify-token",
+      "https://todoappfullstack-kxv2.onrender.com/api/users/verify-token",
       {
         withCredentials: true,
       }
