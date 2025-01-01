@@ -28,7 +28,7 @@ const CreateTodo = () => {
     e.preventDefault();
     try {
       let res = await axios.post(
-        "http://localhost:5000/api/todo/create",
+        "https://todoappfullstack-kxv2.onrender.com/api/todo/create",
         formData,
         {
           headers: {

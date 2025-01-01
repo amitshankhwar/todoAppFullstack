@@ -14,7 +14,7 @@ const Dashboard = () => {
   async function todoData() {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/todo/getAllTodo",
+        "https://todoappfullstack-kxv2.onrender.com/api/todo/getAllTodo",
         { withCredentials: "include" }
       );
       setData(response.data);
@@ -31,7 +31,7 @@ const Dashboard = () => {
   async function deleteTodo(id) {
     try {
       const res = await axios.delete(
-        `http://localhost:5000/api/todo/delete/${id}`,
+        `https://todoappfullstack-kxv2.onrender.com/api/todo/delete/${id}`,
         { withCredentials: "include" }
       );
       console.log(res);

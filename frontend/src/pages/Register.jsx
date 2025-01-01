@@ -29,7 +29,7 @@ const RegisterForm = () => {
 
     try {
       let res = await axios.post(
-        "http://localhost:5000/api/users/register",
+        "https://todoappfullstack-kxv2.onrender.com/api/users/register",
         formData,
         {
           headers: {

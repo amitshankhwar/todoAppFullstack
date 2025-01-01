@@ -28,7 +28,7 @@ const UpdateTodo = () => {
     e.preventDefault();
     try {
       let res = await axios.put(
-        `http://localhost:5000/api/todo/update/${id}`,
+        `https://todoappfullstack-kxv2.onrender.com/api/todo/update/${id}`,
         formData,
         {
           headers: {
