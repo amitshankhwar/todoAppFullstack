@@ -19,10 +19,6 @@ app.use(express.json()); //middleware -> req middleware  res
 
 dbConnect();
 
-// const corsOption = {
-//   origin: "https://sparkling-cocada-f0cad3.netlify.app/",
-//   credentials: true,
-// };
 app.use(cors());
 
 app.use(cookieParser());
