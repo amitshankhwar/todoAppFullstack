@@ -5,7 +5,6 @@ import userRoutes from "./routes/userRoutes.js";
 import todoRoutes from "./routes/todoRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { auth } from "./middleware/authMiddleware.js";
 import path from "path";
 import { fileURLToPath } from "url";
 

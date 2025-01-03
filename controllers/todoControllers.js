@@ -4,13 +4,15 @@ export async function createTodoController(req, res) {
   try {
     const { title, description } = req.body;
 
+    const userId = req.id;
+
     if (!title || !description) {
       return res
         .status(200)
         .json({ message: "Please provide a title and description" });
     }
 
-    await Todo({ title, description }).save();
+    await Todo({ title, description, userId }).save();
 
     return res.status(200).json({
       success: true,
@@ -110,7 +112,9 @@ export async function getOneTodoController(req, res) {
 }
 export async function getAllTodoController(req, res) {
   try {
-    const allTodos = await Todo.find();
+    const userId = req.id;
+
+    const allTodos = await Todo.find({ userId });
 
     if (!allTodos) {
       return res.status(200).json({
