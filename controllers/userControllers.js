@@ -1,6 +1,8 @@
 import { User } from "../models/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 export async function registerController(req, res) {
   try {
@@ -42,16 +44,6 @@ export async function registerController(req, res) {
 export async function loginController(req, res) {
   try {
     const { username, email, password } = req.body;
-
-    const Name = await User.findOne({ username: username });
-    console.log(Name);
-
-    if (!Name) {
-      return res.status(200).json({
-        success: false,
-        message: "Invalid username",
-      });
-    }
 
     const user = await User.findOne({ email });
 
@@ -111,6 +103,120 @@ export async function logoutController(req, res) {
   }
 }
 
+export async function requestPasswordResetController(req, res) {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Generate a reset token (can be stored in the user model)
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiry = Date.now() + 15 * 60 * 1000; // 15 minutes expiry
+
+    // Save the reset token and expiry to the user
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = resetTokenExpiry;
+    await user.save();
+
+    // Send reset token via email (use your email service here)
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // Your email service provider
+      auth: {
+        user: process.env.GMAIL, // Use environment variables for this in production
+        pass: process.env.GMAIL_PASS, // Use environment variables for this in production
+      },
+    });
+
+    const resetLink = `${req.headers.origin}/reset-password/${resetToken}`;
+
+    const mailOptions = {
+      from: process.env.GMAIL, // Sender address
+      to: email, // Recipient address
+      subject: "Password Reset Request",
+      text: `You requested a password reset. Click the link to reset your password: ${resetLink}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset link sent to your email",
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export async function verifyResetTokenController(req, res) {
+  try {
+    const { token } = req.params;
+
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() }, // Ensure the token hasn't expired
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Token is valid", // Token is valid for password reset
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export async function resetPasswordController(req, res) {
+  try {
+    const { token, password } = req.body;
+
+    console.log("token-> ", token, "newp -> ", password);
+
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() }, // Ensure token is valid
+    });
+
+    console.log(user);
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Update the user's password and clear the reset token and expiry
+    user.password = hashedPassword;
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 export async function isAuth(req, res) {
   const token = req.cookies.token; // Access HttpOnly cookie
 
@@ -120,7 +226,12 @@ export async function isAuth(req, res) {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    return res.status(200).json({ valid: true, user: decoded });
+
+    const _id = decoded.userId;
+
+    const userInfo = await User.findOne({ _id });
+
+    return res.status(200).json({ valid: true, userInfo });
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" });
   }

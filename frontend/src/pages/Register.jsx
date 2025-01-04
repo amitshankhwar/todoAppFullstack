@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import axios from "axios";
 import toast, { useToaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { baseURL } from "../varibles.jsx";
 
 const RegisterForm = () => {
   // State to handle form inputs
@@ -28,16 +29,12 @@ const RegisterForm = () => {
     e.preventDefault();
 
     try {
-      let res = await axios.post(
-        "https://todoappfullstack-kxv2.onrender.com/api/users/register",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      let res = await axios.post(`${baseURL}/api/users/register`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
 
       if (res.data.success) {
         toast.success(res.data.message);

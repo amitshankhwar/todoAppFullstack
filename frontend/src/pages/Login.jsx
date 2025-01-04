@@ -6,11 +6,11 @@ import axios from "axios";
 import toast, { useToaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { baseURL } from "../varibles.jsx";
 
 const LoginForm = () => {
   // State to handle form inputs
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -28,16 +28,12 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      let res = await axios.post(
-        "https://todoappfullstack-kxv2.onrender.com/api/users/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      let res = await axios.post(`${baseURL}/api/users/login`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
 
       console.log(res);
 
@@ -59,21 +55,6 @@ const LoginForm = () => {
       <div className="max-w-md w-full mx-auto mt-10 p-6 bg-white rounded-3xl shadow-xl shadow-gray-400">
         <h2 className="text-2xl font-bold text-center mb-4 ">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Username */}
-          <div className="flex flex-col">
-            <Label htmlFor="username" className="mb-2">
-              Username
-            </Label>
-            <Input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Enter a username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-          </div>
-
           {/* Email */}
           <div className="flex flex-col">
             <Label htmlFor="email" className="mb-2">
@@ -110,10 +91,16 @@ const LoginForm = () => {
           </Button>
         </form>
 
+        {/* Forgot Password and Register Links */}
+        <p className="text-center mt-2">
+          <Link to="/forgot-password" className="text-blue-800 underline">
+            Forgot Password?
+          </Link>
+        </p>
         <p className="text-blue-800 text-center mt-2">
-          New User ?{" "}
+          New User?{" "}
           <Link to="/register" className="text-blue-800 underline">
-            register
+            Register
           </Link>
         </p>
       </div>

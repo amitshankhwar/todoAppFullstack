@@ -6,6 +6,7 @@ import axios from "axios";
 import toast, { useToaster } from "react-hot-toast";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { baseURL } from "../varibles.jsx";
 
 const CreateTodo = () => {
   const navigate = useNavigate();
@@ -27,16 +28,12 @@ const CreateTodo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let res = await axios.post(
-        "https://todoappfullstack-kxv2.onrender.com/api/todo/create",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      let res = await axios.post(`${baseURL}/api/todo/create`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
 
       console.log(res);
 

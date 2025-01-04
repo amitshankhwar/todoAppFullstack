@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import axios from "axios";
 import toast, { useToaster } from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { baseURL } from "../varibles.jsx";
 
 const UpdateTodo = () => {
   let { id } = useParams();
@@ -27,16 +28,12 @@ const UpdateTodo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let res = await axios.put(
-        `https://todoappfullstack-kxv2.onrender.com/api/todo/update/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      let res = await axios.put(`${baseURL}/api/todo/update/${id}`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
 
       console.log(res);
 

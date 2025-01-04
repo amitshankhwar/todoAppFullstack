@@ -6,6 +6,7 @@ import { RiLogoutCircleLine } from "react-icons/ri";
 import { RiAddCircleLine } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
+import { baseURL } from "../varibles.jsx";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,10 +14,9 @@ const Dashboard = () => {
 
   async function todoData() {
     try {
-      const response = await axios.get(
-        "https://todoappfullstack-kxv2.onrender.com/api/todo/getAllTodo",
-        { withCredentials: "include" }
-      );
+      const response = await axios.get(`${baseURL}/api/todo/getAllTodo`, {
+        withCredentials: "include",
+      });
       setData(response.data);
       console.log(response.data);
     } catch (error) {
@@ -30,10 +30,9 @@ const Dashboard = () => {
 
   async function deleteTodo(id) {
     try {
-      const res = await axios.delete(
-        `https://todoappfullstack-kxv2.onrender.com/api/todo/delete/${id}`,
-        { withCredentials: "include" }
-      );
+      const res = await axios.delete(`${baseURL}/api/todo/delete/${id}`, {
+        withCredentials: "include",
+      });
       console.log(res);
       todoData();
       if (res.data.success) {
@@ -48,10 +47,9 @@ const Dashboard = () => {
 
   async function logOut() {
     try {
-      const response = await axios.get(
-        "https://todoappfullstack-kxv2.onrender.com/api/users/logout",
-        { withCredentials: "include" }
-      );
+      const response = await axios.get(`${baseURL}/api/users/logout`, {
+        withCredentials: "include",
+      });
       navigate("/login");
       console.log(response);
       if (response.data.success) {

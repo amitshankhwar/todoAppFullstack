@@ -1,20 +1,24 @@
-import React, { createContext } from "react";
-import RegisterForm from "./pages/Register";
-import { Toaster } from "react-hot-toast";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+import RegisterForm from "./pages/Register";
 import LoginForm from "./pages/Login";
-import Home from "./pages/Navbar";
 import Intro from "./pages/Intro";
-import CreateTodo from "./pages/CreateTodo";
 import Dashboard from "./pages/Dashboard";
+import CreateTodo from "./pages/CreateTodo";
 import UpdateTodo from "./pages/UpdateTodo";
+
 import PublicRoute from "./utils/PublicRoute";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import ResetPassword from "./auth/ResetPassword";
+import RequestPasswordReset from "./auth/RequestPasswordReset";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public Routes */}
         <Route
           path="/"
           element={
@@ -23,6 +27,40 @@ const App = () => {
             </PublicRoute>
           }
         />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginForm />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <RegisterForm />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicRoute>
+              <RequestPasswordReset />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/reset-password/:token"
+          element={
+            <PublicRoute>
+              <ResetPassword />
+            </PublicRoute>
+          }
+        />
+
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -45,22 +83,6 @@ const App = () => {
             <ProtectedRoute>
               <UpdateTodo />
             </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginForm />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <RegisterForm />
-            </PublicRoute>
           }
         />
       </Routes>
